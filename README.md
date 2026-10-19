@@ -68,7 +68,7 @@ PSNR (dB) on **OCMR low acceleration** (mean over 38 test samples per split):
 | CST-Net    | 42.84     | 41.91     | 40.72     |
 | MOL        | 41.10     | 39.73     | 38.47     |
 
-SSIM and HFEN, the other two test sets, standard deviations and per-split breakdowns are all in the [live leaderboard](https://yhao-zhang.top/cmr-recon-arena/) / the `reconstructions/` CSVs.
+SSIM and HFEN, the other two test sets, standard deviations and per-split breakdowns are all in the [live leaderboard](https://yhao-zhang.top/cmr-recon-arena/leaderboard) / the `reconstructions/` CSVs.
 
 ## 🧪 Test sets & metrics
 
