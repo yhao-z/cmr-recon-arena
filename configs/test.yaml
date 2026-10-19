@@ -1,0 +1,31 @@
+# Test template: logger-free on purpose.
+#
+# Training configs (configs/model/*.yaml) carry SwanLabLogger + ModelCheckpoint;
+# loading them for a test run creates an empty swanlab record and a useless
+# checkpoint callback. This file only provides the trainer skeleton plus the
+# model entry - pass it last and override on the CLI:
+#
+#   python main.py test \
+#     --config configs/data/<data_test>.yaml \
+#     --config configs/test.yaml \
+#     --ckpt_path <weights> \
+#     --model.class_path=<pl_modules.XxxModule> \
+#     --model.init_args.model_name=<Method> \
+#     --model.init_args.test_savedir=reconstructions/<group>
+#
+# Values below are a worked example (OCMR-highacc / MOL); scripts/run_benchmark.py
+# sets all of them per run.
+seed_everything: 3407
+trainer:
+  accelerator: gpu
+  deterministic: false
+  devices: 1
+  num_nodes: 1
+
+# data: provided by --config configs/data/<data_test>.yaml (test_split list, transforms)
+model:
+  class_path: pl_modules.MOLModule
+  init_args:
+    test_savedir: 'reconstructions/OCMR-highacc'
+    model_name: MOL
+ckpt_path: weights/OCMR-highacc/MOL.ckpt

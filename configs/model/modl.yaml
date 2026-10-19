@@ -1,0 +1,49 @@
+# MoDL: Model-Based Deep Learning for MRI Reconstruction
+# Reference: https://github.com/bo-10000/MoDL_PyTorch
+# Settings match reference as closely as possible.
+
+seed_everything: 3407
+trainer:
+  accelerator: gpu
+  deterministic: false
+  devices: 1
+  num_nodes: 1
+  max_epochs: 150 
+  logger: 
+    class_path: pl_modules.swanlab_logger.ProjectSwanLabLogger
+    init_args:
+      save_dir: experiments
+      project: OCMR-SOTAs
+      description: "MoDL (ref: bo-10000/MoDL_PyTorch)"
+      experiment_name: MoDL-highacc
+  callbacks:
+    -
+      class_path: lightning.pytorch.callbacks.ModelCheckpoint
+      init_args:
+        save_last: true
+        verbose: true
+    - 
+      class_path: lightning.pytorch.callbacks.LearningRateMonitor
+      init_args:
+        logging_interval: 'epoch'
+
+# data: configs/data/ocmr_highacc.yaml
+model:
+  class_path: pl_modules.MoDLModule
+  init_args:
+    model_name: MoDL
+    # Architecture (reference defaults)
+    n_layers: 5                 # CNN depth (reference: 5)
+    k_iters: 10                 # unrolled iters (reference: k=10 for finetune)
+    cg_iter: 10                 # CG iterations (reference: 10)
+    autograd: true
+    use_checkpoint: true  # gradient checkpointing to save memory
+    # Training (reference: Adam lr=0.001, grad clip=1.0)
+    lr: 0.0001
+    weight_decay: 0.0
+    gradient_clip: 1.0          # reference: clip_value=1.0
+    # Loss (reference: MSE)
+    normalize_for_loss: true
+    loss_fns:
+      - mse                     # reference: nn.MSELoss()
+    ssim_mode: 3d

@@ -1,0 +1,30 @@
+# Data config: OCMR test, low acceleration (test_gro_06/08/10)
+# Usage: python main.py fit --config configs/data/<this file> --config configs/<model>.yaml (later --config wins per key)
+data:
+  class_path: pl_modules.FastMriDataModule
+  init_args:
+    data_path: OCMR/processed_ocmr
+    coil_sens_path: OCMR/processed_ocmr/csm
+    test_transform: 
+      class_path: helpers.data.transforms.VarNetDataTransform
+      init_args:
+        mask_func: null
+        use_seed: true
+        random_flips: False
+        roll_temporal: False
+        augment_phase: False
+        augment_mask: False
+        augment_tres: False
+        field_strength: null
+    data_source: ocmr
+    test_split:
+      - test_gro_06
+      - test_gro_08
+      - test_gro_10
+    use_dataset_cache_file: true
+    batch_size: 1
+    num_workers: 16
+    distributed_sampler: false
+    num_espirit_maps: 1
+
+

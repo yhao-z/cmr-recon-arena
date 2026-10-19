@@ -1,0 +1,48 @@
+__cache__
+__pycache__
+*.pyc
+*.pyo
+.vscode
+.codegraph
+.venv
+venv
+.pytest_cache
+.mypy_cache
+.ruff_cache
+*.egg-info
+.ipynb_checkpoints
+experiments
+lightning_logs
+weights
+reconstructions*
+val_output
+swanlog
+results
+*.png
+*.svg
+*.npy
+*.npz
+*.pkl
+_.py
+*.pt
+*.ckpt
+*.log
+# repo-root ./data/ is the default in-repo dataset location - the code that
+# used to live here moved to helpers/data/, so only datasets belong at ./data/
+/data/
+
+# raw/processed MRI data: created under the repo root by the preprocessing defaults
+# (data/OCMR, data/CMRxRecon) or by FastMriDataModule when YHAO_DATA is unset
+OCMR/
+CMRxRecon/
+data/OCMR/
+data/CMRxRecon/
+coil_sens
+# derived metric artifacts written by scripts/calc_metric.py next to the .h5 inputs
+metrics_per_sample.csv
+metrics_by_method.csv
+metrics_summary.json
+summary_table.csv
+swanlab-local
+
+!docs/leaderboard.png

@@ -1,0 +1,56 @@
+# Data config: OCMR train, high acceleration (GROMaskFunc accel 18-22)
+# Usage: python main.py fit --config configs/data/<this file> --config configs/<model>.yaml (later --config wins per key)
+data:
+  class_path: pl_modules.FastMriDataModule
+  init_args:
+    # data_path: OCMR/processed_ocmr
+    # coil_sens_path: OCMR/processed_ocmr/csm
+    data_path: OCMR/processed_ocmr
+    coil_sens_path: OCMR/processed_ocmr/csm
+    train_transform: 
+      class_path: helpers.data.transforms.VarNetDataTransform
+      init_args:
+        mask_func: 
+          class_path: helpers.data.subsample.GROMaskFunc
+          init_args:
+            accelerations: [18,19,20,21,22] # [6,7,8,9,10]
+        use_seed: false
+        random_flips: True
+        roll_temporal: False
+        augment_phase: False
+        augment_mask: False
+        augment_tres: False
+        field_strength: null
+    val_transform: 
+      class_path: helpers.data.transforms.VarNetDataTransform
+      init_args:
+        mask_func: 
+          class_path: helpers.data.subsample.GROMaskFunc
+          init_args:
+            accelerations: [18,19,20,21,22] # [6,7,8,9,10]
+        use_seed: true
+        random_flips: True
+        roll_temporal: False
+        augment_phase: False
+        augment_mask: False
+        augment_tres: False
+        field_strength: null
+    test_transform: 
+      class_path: helpers.data.transforms.VarNetDataTransform
+      init_args:
+        mask_func: null
+        use_seed: true
+        random_flips: True
+        roll_temporal: False
+        augment_phase: False
+        augment_mask: False
+        augment_tres: False
+        field_strength: null
+    data_source: ocmr
+    test_split: null
+    use_dataset_cache_file: true
+    batch_size: 1
+    num_workers: 16
+    distributed_sampler: false
+    num_espirit_maps: 1
+

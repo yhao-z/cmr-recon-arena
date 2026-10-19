@@ -1,0 +1,61 @@
+# MOL (Monotone Operator Learning) DEQ for 2D+T Dynamic MRI
+# All hyperparameters match trn_mol.py EXACTLY.
+
+seed_everything: 3407
+trainer:
+  accelerator: gpu
+  deterministic: false
+  devices: 1
+  num_nodes: 1
+  max_epochs: 150   
+  logger: 
+    class_path: pl_modules.swanlab_logger.ProjectSwanLabLogger
+    init_args:
+      save_dir: experiments
+      project: OCMR-SOTAs
+      description: MOL-DEQ (trn_mol.py exact settings)
+      experiment_name: MOL-DEQ-highacc
+  callbacks:
+    -
+      class_path: lightning.pytorch.callbacks.ModelCheckpoint
+      init_args:
+        save_last: true
+        verbose: true
+    - 
+      class_path: lightning.pytorch.callbacks.LearningRateMonitor
+      init_args:
+        logging_interval: 'epoch'
+
+# data: configs/data/ocmr_highacc.yaml  # original num_workers=4; override: --data.init_args.num_workers 4
+model:
+  class_path: pl_modules.MOLModule
+  init_args:
+    model_name: MOL-DEQ
+    # ---- MOL architecture (trn_mol.py EXACT) ----
+    num_iters: 50              # nFETarget = 500
+    num_cg_init: 50             # cgIter_init = 50
+    num_cg_iters: 10             # cgIter_itr = 5
+    features: 64                # number_of_feature_filters = 64
+    layers: 5                   # number_of_layers = 5
+    lam_init: 100.0             # lam_init = 100
+    lam: 100.0                  # lam_itr = 100 (learnable)
+    alpha: 0.055                 # alpha = 0.01
+    spectral_norm: false        # sn=False in trn_mol.py
+    tol: 0.001                 # err_tol = 1e-4
+    verbose: false
+    # ---- Training (trn_mol.py EXACT) ----
+    learning_rate: 0.0001        # learning_rate = 1e-3
+    learning_rate_lam: 0.1      # learning_rate_lam = 1
+    lr_step_size: 50             # StepLR step_size=1
+    lr_gamma: 0.1               # StepLR gamma=0.3
+    # ---- Lipschitz (trn_mol.py EXACT) ----
+    learning_rate_lipschitz: 1.0  # learning_rate_lipschitz = 1e0
+    eps: 0.01                   # eps = 0.01
+    T: 0.98                     # T = 0.98
+    e: 0.001                    # e = 1e-3
+    clip_wt: 0.000001           # clip_wt = 1e-6
+    lipschitz_iters: 10         # adverserial_update(iters=10)
+    # ---- Loss (trn_mol.py EXACT: nn.MSELoss) ----
+    normalize_for_loss: true
+    loss_fns:
+      - mse

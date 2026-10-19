@@ -1,0 +1,56 @@
+# common settings for all experiments
+seed_everything: 3407
+trainer:
+  accelerator: gpu
+  # log_every_n_steps: 2 # log every n steps during training
+  deterministic: false
+  # if using multiple GPUs, set the strategy to ddp
+  # strategy: ddp
+  # devices: 2
+  # otherwise, use just one GPU
+  devices: 1
+  num_nodes: 1
+  max_epochs: 150
+  # max_steps: 400000
+  # limit_train_batches: 10 # use all training batches
+  # limit_val_batches: 10 # use all validation batches
+  # val_check_interval: 10
+  logger: 
+    class_path: pl_modules.swanlab_logger.ProjectSwanLabLogger
+    init_args:
+      save_dir: experiments
+      project: OCMR-SOTAs
+      description: 
+      experiment_name: T2LR-Net-highacc
+      mode: cloud
+  callbacks:
+    -
+      class_path: lightning.pytorch.callbacks.ModelCheckpoint
+      init_args:
+        save_last: true # always save the last checkpoint
+        verbose: true # print checkpoint information
+    - 
+      class_path: lightning.pytorch.callbacks.LearningRateMonitor
+      init_args:
+        logging_interval: 'epoch'
+    # -
+    #   class_path: pl_modules.EMAWeightAveraging
+    #   init_args:
+    #     decay: 0.995 # decay rate for EMA
+
+# data: configs/data/ocmr_highacc.yaml
+model:
+  class_path: pl_modules.T2LRNetModule
+  init_args:
+    model_name: T2LR-Net
+    save_val_images: false
+    niter: 15
+    chans: 16
+    normalize_for_loss: true
+    lr: 0.0005
+    lr_step_size: 50
+    lr_gamma: 0.1
+    weight_decay: 0.0
+    loss_fns:
+      - mse
+
